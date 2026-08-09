@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Models Comparison Report — Virtuebyte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --bg: #ffffff;
+            --text: #2d2d2d;
+            --text-light: #666;
+            --border: #e0e0e0;
+            --bg-light: #f8f9fc;
+            --green: #10b981;
+            --blue: #3b82f6;
+            --orange: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 15mm;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            font-size: 11px;
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .page {
+            page-break-after: always;
+            padding: 20px 30px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        /* Cover Page */
+        .cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .cover-badge {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .cover h1 {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .cover h2 {
+            font-size: 18px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 50px;
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .cover-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cover-divider {
+            width: 60px;
+            height: 3px;
+            background: var(--highlight);
+            margin: 30px auto;
+            border-radius: 2px;
+        }
+
+        /* Headers */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .page-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .page-header .page-num {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 20px 0 10px 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            font-size: 10.5px;
+        }
+
+        thead th {
+            background: var(--primary);
+            color: white;
+            padding: 8px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child {
+            border-radius: 6px 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 6px 0 0;
+        }
+
+        tbody td {
+            padding: 7px 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        tbody tr:hover {
+            background: #eef2ff;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-orange { background: #fef3c7; color: #92400e; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-purple { background: #ede9fe; color: #5b21b6; }
+        .badge-gray { background: #f3f4f6; color: #374151; }
+
+        .stars {
+            color: #f59e0b;
+            letter-spacing: 1px;
+        }
+
+        .check { color: var(--green); font-weight: 700; }
+        .cross { color: var(--red); }
+
+        /* Notes */
+        .note-box {
+            background: #f0f4ff;
+            border-left: 3px solid var(--blue);
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 10.5px;
+            color: #1e3a5f;
+        }
+
+        .note-box strong {
+            color: var(--accent);
+        }
+
+        .recommendation-box {
+            background: #ecfdf5;
+            border-left: 3px solid var(--green);
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 10.5px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 3px solid var(--orange);
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 10.5px;
+        }
+
+        /* Cost highlight */
+        .cost-highlight {
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .cost-medium {
+            font-weight: 600;
+            color: var(--orange);
+        }
+
+        .cost-high {
+            font-weight: 600;
+            color: var(--red);
+        }
+
+        /* Footer */
+        .page-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #999;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .provider-tag {
+            font-size: 9px;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .summary-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .summary-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-card .label {
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        @media print {
+            body { font-size: 10px; }
+            .page { padding: 10px 20px; }
+            .page-footer { position: fixed; bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: COVER ==================== -->
+<div class="page cover">
+    <div class="cover-badge">Virtuebyte • AI Development Team</div>
+    <h1>Embedding & LLM Models</h1>
+    <h2>Comparison Report for Production RAG System</h2>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+        <span>📅 July 2026</span>
+        <span>📋 Version 1.0</span>
+        <span>🔒 Internal Use Only</span>
+    </div>
+</div>
+
+<!-- ==================== PAGE 2: EMBEDDING MODELS ==================== -->
+<div class="page">
+    <div class="page-header">
+        <h2>1. Embedding Models — Full Comparison</h2>
+        <span class="page-num">Page 2</span>
+    </div>
+    <p class="section-subtitle">Comparison of Google Gemini, OpenAI, and Cohere embedding models across all production parameters</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Gemini embedding-001</th>
+                <th>Gemini Embedding 2</th>
+                <th>OpenAI text-embedding-3-small</th>
+                <th>OpenAI text-embedding-3-large</th>
+                <th>Cohere embed-v4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Provider</strong></td>
+                <td>Google</td>
+                <td>Google</td>
+                <td>OpenAI</td>
+                <td>OpenAI</td>
+                <td>Cohere</td>
+            </tr>
+            <tr>
+                <td><strong>Default Dimensions</strong></td>
+                <td>3,072</td>
+                <td>3,072</td>
+                <td>1,536</td>
+                <td>3,072</td>
+                <td>1,536</td>
+            </tr>
+            <tr>
+                <td><strong>Max Input Tokens</strong></td>
+                <td>8,192</td>
+                <td>8,192</td>
+                <td>8,191</td>
+                <td>8,191</td>
+                <td>128,000</td>
+            </tr>
+            <tr>
+                <td><strong>Matryoshka (MRL)</strong></td>
+                <td class="check">✅ Yes</td>
+                <td class="check">✅ Yes</td>
+                <td class="check">✅ Yes</td>
+                <td class="check">✅ Yes</td>
+                <td class="check">✅ Yes (256–1,536)</td>
+            </tr>
+            <tr>
+                <td><strong>Multimodal</strong></td>
+                <td class="cross">❌ Text only</td>
+                <td class="check">✅ Text + Image + Audio + Video</td>
+                <td class="cross">❌ Text only</td>
+                <td class="cross">❌ Text only</td>
+                <td class="check">✅ Text + Image</td>
+            </tr>
+            <tr>
+                <td><strong>Task Types</strong></td>
+                <td class="check">✅ 6 types (RETRIEVAL_QUERY, RETRIEVAL_DOCUMENT, SEMANTIC_SIMILARITY, CLASSIFICATION, CLUSTERING, CODE_RETRIEVAL)</td>
+                <td class="check">✅ 6 types</td>
+                <td class="cross">❌ None</td>
+                <td class="cross">❌ None</td>
+                <td class="check">✅ search_query, search_document, classification, clustering</td>
+            </tr>
+            <tr>
+                <td><strong>Standard Price (per 1M tokens)</strong></td>
+                <td class="cost-highlight">Free tier available</td>
+                <td class="cost-highlight">Free tier available</td>
+                <td class="cost-highlight">$0.02</td>
+                <td class="cost-medium">$0.13</td>
+                <td class="cost-medium">$0.12</td>
+            </tr>
+            <tr>
+                <td><strong>Batch Price (per 1M tokens)</strong></td>
+                <td class="cost-highlight">Batch available (discounted)</td>
+                <td class="cost-highlight">Batch available (discounted)</td>
+                <td class="cost-highlight">$0.01 (50% off)</td>
+                <td class="cost-highlight">$0.065 (50% off)</td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td><strong>Free Tier</strong></td>
+                <td class="check">✅ ~1,500 RPD</td>
+                <td class="check">✅ ~1,500 RPD</td>
+                <td class="cross">❌ No</td>
+                <td class="cross">❌ No</td>
+                <td class="check">✅ Trial credits</td>
+            </tr>
+            <tr>
+                <td><strong>Multilingual</strong></td>
+                <td class="check">✅ Excellent (100+ languages)</td>
+                <td class="check">✅ Excellent</td>
+                <td>⚠️ Good (English-optimized)</td>
+                <td>⚠️ Good (English-optimized)</td>
+                <td class="check">✅ Strong (100+ languages)</td>
+            </tr>
+            <tr>
+                <td><strong>Long Document Handling</strong></td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★★</span> (128K context)</td>
+            </tr>
+            <tr>
+                <td><strong>Retrieval Quality (MTEB)</strong></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+            </tr>
+            <tr>
+                <td><strong>Speed</strong></td>
+                <td><span class="badge badge-green">Fast</span></td>
+                <td><span class="badge badge-orange">Moderate</span></td>
+                <td><span class="badge badge-green">Very Fast</span></td>
+                <td><span class="badge badge-green">Fast</span></td>
+                <td><span class="badge badge-green">Fast</span></td>
+            </tr>
+            <tr>
+                <td><strong>AWS Bedrock</strong></td>
+                <td class="cross">❌ (External API)</td>
+                <td class="cross">❌ (External API)</td>
+                <td class="cross">❌ (External API)</td>
+                <td class="cross">❌ (External API)</td>
+                <td class="check">✅ Available</td>
+            </tr>
+            <tr>
+                <td><strong>LangChain Integration</strong></td>
+                <td class="check">✅ langchain-google-genai</td>
+                <td class="check">✅ langchain-google-genai</td>
+                <td class="check">✅ langchain-openai</td>
+                <td class="check">✅ langchain-openai</td>
+                <td class="check">✅ langchain-cohere</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="recommendation-box">
+        <strong>✅ Recommendation:</strong> <strong>Gemini embedding-001</strong> offers the best value — top-tier retrieval quality, task-type optimization for RAG, free tier for development, and excellent multilingual support. For multimodal needs (images/tables), <strong>Gemini Embedding 2</strong> or <strong>Cohere embed-v4</strong> are strong options.
+    </div>
+
+    <div class="page-footer">
+        <span>Virtuebyte — AI Models Comparison Report</span>
+        <span>Confidential — July 2026</span>
+    </div>
+</div>
+
+<!-- ==================== PAGE 3: LLM MODELS ==================== -->
+<div class="page">
+    <div class="page-header">
+        <h2>2. LLM Models — Query & Response Generation</h2>
+        <span class="page-num">Page 3</span>
+    </div>
+    <p class="section-subtitle">Comparison of Google Gemini and OpenAI models for RAG output generation (answer synthesis from retrieved context)</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Provider</th>
+                <th>Input (per 1M tok)</th>
+                <th>Output (per 1M tok)</th>
+                <th>Context Window</th>
+                <th>Speed</th>
+                <th>Quality</th>
+                <th>Free Tier</th>
+                <th>Best For</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Gemini Models -->
+            <tr style="background: #f0fdf4;">
+                <td><span class="model-name">Gemini 3.1 Flash-Lite</span><br><span class="provider-tag">Budget Tier</span></td>
+                <td>Google</td>
+                <td class="cost-highlight">$0.25</td>
+                <td class="cost-highlight">$1.50</td>
+                <td>1M tokens</td>
+                <td><span class="badge badge-green">Very Fast</span></td>
+                <td><span class="stars">★★★</span></td>
+                <td class="check">✅</td>
+                <td>High-volume, simple Q&A</td>
+            </tr>
+            <tr style="background: #f0fdf4;">
+                <td><span class="model-name">Gemini 3.5 Flash</span><br><span class="provider-tag">⭐ Recommended</span></td>
+                <td>Google</td>
+                <td class="cost-medium">$1.50</td>
+                <td class="cost-medium">$9.00</td>
+                <td>1M tokens</td>
+                <td><span class="badge badge-green">Fast</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td class="check">✅</td>
+                <td>Production RAG chatbot</td>
+            </tr>
+            <tr style="background: #f0fdf4;">
+                <td><span class="model-name">Gemini 3.1 Pro</span><br><span class="provider-tag">Premium Tier</span></td>
+                <td>Google</td>
+                <td class="cost-high">$2.00</td>
+                <td class="cost-high">$12.00</td>
+                <td>1M tokens</td>
+                <td><span class="badge badge-orange">Moderate</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td class="check">✅</td>
+                <td>Complex reasoning, analysis</td>
+            </tr>
+            <!-- OpenAI Models -->
+            <tr>
+                <td><span class="model-name">GPT-4.1 Nano</span><br><span class="provider-tag">Budget Tier</span></td>
+                <td>OpenAI</td>
+                <td class="cost-highlight">$0.10</td>
+                <td class="cost-highlight">$0.40</td>
+                <td>128K tokens</td>
+                <td><span class="badge badge-green">Very Fast</span></td>
+                <td><span class="stars">★★★</span></td>
+                <td class="cross">❌</td>
+                <td>Simple, high-volume tasks</td>
+            </tr>
+            <tr>
+                <td><span class="model-name">GPT-4.1 Mini</span><br><span class="provider-tag">Balanced</span></td>
+                <td>OpenAI</td>
+                <td class="cost-highlight">$0.40</td>
+                <td class="cost-medium">$1.60</td>
+                <td>128K tokens</td>
+                <td><span class="badge badge-green">Fast</span></td>
+                <td><span class="stars">★★★★</span></td>
+                <td class="cross">❌</td>
+                <td>Balanced RAG generation</td>
+            </tr>
+            <tr>
+                <td><span class="model-name">o4-mini</span><br><span class="provider-tag">Reasoning</span></td>
+                <td>OpenAI</td>
+                <td class="cost-medium">$1.10</td>
+                <td class="cost-high">$4.40</td>
+                <td>128K tokens</td>
+                <td><span class="badge badge-orange">Moderate</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td class="cross">❌</td>
+                <td>Multi-step reasoning</td>
+            </tr>
+            <tr>
+                <td><span class="model-name">GPT-5.6 Luna</span><br><span class="provider-tag">Flagship</span></td>
+                <td>OpenAI</td>
+                <td class="cost-medium">$1.00</td>
+                <td class="cost-high">$6.00</td>
+                <td>128K tokens</td>
+                <td><span class="badge badge-orange">Moderate</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td class="cross">❌</td>
+                <td>Enterprise, complex tasks</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note-box">
+        <strong>📌 RAG Query Breakdown:</strong> A typical RAG request consists of ~2,500 input tokens (system prompt + retrieved context + user question) and ~200 output tokens (generated answer). The cost tables on the next page use these estimates.
+    </div>
+
+    <h3>Key Differences: Gemini vs OpenAI for RAG</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Factor</th>
+                <th>Google Gemini</th>
+                <th>OpenAI</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Free Tier</strong></td>
+                <td class="check">✅ Available (all models)</td>
+                <td class="cross">❌ Not available</td>
+            </tr>
+            <tr>
+                <td><strong>Context Window</strong></td>
+                <td><strong>1M tokens</strong> (all models)</td>
+                <td>128K tokens</td>
+            </tr>
+            <tr>
+                <td><strong>Context Caching</strong></td>
+                <td class="check">✅ Up to 90% savings on repeated context</td>
+                <td class="cross">❌ Not available for embeddings</td>
+            </tr>
+            <tr>
+                <td><strong>Ecosystem Alignment</strong></td>
+                <td class="check">✅ Same provider for embeddings + LLM</td>
+                <td>⚠️ Separate from Gemini embeddings</td>
+            </tr>
+            <tr>
+                <td><strong>Structured Output</strong></td>
+                <td class="check">✅ JSON mode</td>
+                <td class="check">✅ JSON mode + function calling</td>
+            </tr>
+            <tr>
+                <td><strong>Grounding</strong></td>
+                <td class="check">✅ Built-in Google Search grounding</td>
+                <td>⚠️ Requires external tool integration</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="recommendation-box">
+        <strong>✅ Recommendation:</strong> For our RAG chatbot, <strong>Gemini 3.5 Flash</strong> is the best fit — high quality, fast response, free tier for development, and same ecosystem as our embedding model. For budget-constrained production, <strong>GPT-4.1 Mini</strong> offers the best price-performance at $0.40/$1.60.
+    </div>
+
+    <div class="page-footer">
+        <span>Virtuebyte — AI Models Comparison Report</span>
+        <span>Confidential — July 2026</span>
+    </div>
+</div>
+
+<!-- ==================== PAGE 4: COST PROJECTIONS ==================== -->
+<div class="page">
+    <div class="page-header">
+        <h2>3. Monthly Cost Projections</h2>
+        <span class="page-num">Page 4</span>
+    </div>
+    <p class="section-subtitle">Estimated monthly costs based on typical RAG query profile: ~2,500 input tokens + ~200 output tokens per request</p>
+
+    <h3>Scenario A: 100 Requests Per Day (~3,000/month)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Model</th>
+                <th>Calculation</th>
+                <th>Monthly Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: #f0fdf4;">
+                <td colspan="4" style="font-weight: 600; color: var(--accent);">Option 1: Full Gemini Stack (Recommended)</td>
+            </tr>
+            <tr>
+                <td>Embedding (queries)</td>
+                <td>Gemini embedding-001</td>
+                <td>3,000 queries × 20 tokens avg = 60K tokens</td>
+                <td class="cost-highlight">~$0 (free tier)</td>
+            </tr>
+            <tr>
+                <td>LLM Generation</td>
+                <td>Gemini 3.5 Flash</td>
+                <td>Input: 7.5M tok × $1.50 + Output: 600K tok × $9.00</td>
+                <td class="cost-medium">$16.65</td>
+            </tr>
+            <tr style="background: #ecfdf5;">
+                <td colspan="3" style="text-align: right; font-weight: 700;">Total (Full Gemini)</td>
+                <td style="font-weight: 700; font-size: 13px; color: var(--green);">~$16.65/mo</td>
+            </tr>
+
+            <tr><td colspan="4" style="height: 8px; border: none;"></td></tr>
+
+            <tr style="background: #f0fdf4;">
+                <td colspan="4" style="font-weight: 600; color: var(--accent);">Option 2: Gemini Embeddings + GPT-4.1 Mini</td>
+            </tr>
+            <tr>
+                <td>Embedding (queries)</td>
+                <td>Gemini embedding-001</td>
+                <td>3,000 queries × 20 tokens avg = 60K tokens</td>
+                <td class="cost-highlight">~$0 (free tier)</td>
+            </tr>
+            <tr>
+                <td>LLM Generation</td>
+                <td>GPT-4.1 Mini</td>
+                <td>Input: 7.5M tok × $0.40 + Output: 600K tok × $1.60</td>
+                <td class="cost-highlight">$3.96</td>
+            </tr>
+            <tr style="background: #ecfdf5;">
+                <td colspan="3" style="text-align: right; font-weight: 700;">Total (Hybrid)</td>
+                <td style="font-weight: 700; font-size: 13px; color: var(--green);">~$3.96/mo</td>
+            </tr>
+
+            <tr><td colspan="4" style="height: 8px; border: none;"></td></tr>
+
+            <tr style="background: #fef3c7;">
+                <td colspan="4" style="font-weight: 600; color: var(--accent);">Option 3: Gemini Embeddings + Gemini 3.1 Flash-Lite (Budget)</td>
+            </tr>
+            <tr>
+                <td>Embedding (queries)</td>
+                <td>Gemini embedding-001</td>
+                <td>3,000 queries × 20 tokens avg = 60K tokens</td>
+                <td class="cost-highlight">~$0 (free tier)</td>
+            </tr>
+            <tr>
+                <td>LLM Generation</td>
+                <td>Gemini 3.1 Flash-Lite</td>
+                <td>Input: 7.5M tok × $0.25 + Output: 600K tok × $1.50</td>
+                <td class="cost-highlight">$2.78</td>
+            </tr>
+            <tr style="background: #ecfdf5;">
+                <td colspan="3" style="text-align: right; font-weight: 700;">Total (Budget)</td>
+                <td style="font-weight: 700; font-size: 13px; color: var(--green);">~$2.78/mo</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Scenario B: 1,000 Requests Per Day (~30,000/month)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Stack</th>
+                <th>Embedding Model</th>
+                <th>LLM Model</th>
+                <th>Embedding Cost</th>
+                <th>LLM Cost</th>
+                <th>Total Monthly</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-green">Recommended</span></td>
+                <td>Gemini embedding-001</td>
+                <td>Gemini 3.5 Flash</td>
+                <td class="cost-highlight">~$0</td>
+                <td>$166.50</td>
+                <td style="font-weight: 700;">$166.50</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-blue">Best Value</span></td>
+                <td>Gemini embedding-001</td>
+                <td>GPT-4.1 Mini</td>
+                <td class="cost-highlight">~$0</td>
+                <td>$39.60</td>
+                <td style="font-weight: 700; color: var(--green);">$39.60</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-orange">Budget</span></td>
+                <td>Gemini embedding-001</td>
+                <td>Gemini 3.1 Flash-Lite</td>
+                <td class="cost-highlight">~$0</td>
+                <td>$27.75</td>
+                <td style="font-weight: 700; color: var(--green);">$27.75</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-purple">Premium</span></td>
+                <td>Gemini embedding-001</td>
+                <td>Gemini 3.1 Pro</td>
+                <td class="cost-highlight">~$0</td>
+                <td>$222.00</td>
+                <td style="font-weight: 700; color: var(--red);">$222.00</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-gray">OpenAI Full</span></td>
+                <td>OpenAI 3-large</td>
+                <td>GPT-4.1 Mini</td>
+                <td>$0.78</td>
+                <td>$39.60</td>
+                <td style="font-weight: 700;">$40.38</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-gray">Cohere + OpenAI</span></td>
+                <td>Cohere embed-v4</td>
+                <td>GPT-4.1 Mini</td>
+                <td>$0.72</td>
+                <td>$39.60</td>
+                <td style="font-weight: 700;">$40.32</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warning-box">
+        <strong>⚠️ Note:</strong> These costs are for API calls only. Additional infrastructure costs (vector database hosting, AWS compute, monitoring) are not included and typically range from $20–$100/month depending on scale and provider.
+    </div>
+
+    <div class="recommendation-box">
+        <strong>✅ Final Recommendation:</strong> Start with <strong>Gemini embedding-001 + Gemini 3.5 Flash</strong> for the best quality-to-cost ratio. The free embedding tier and Gemini's context caching (up to 90% savings on repeated context) make this the most cost-effective premium option. If budget needs to be minimized, switch LLM to <strong>GPT-4.1 Mini ($39.60/mo at 1K req/day)</strong> while keeping Gemini embeddings.
+    </div>
+
+    <div class="page-footer">
+        <span>Virtuebyte — AI Models Comparison Report</span>
+        <span>Confidential — July 2026</span>
+    </div>
+</div>
+
+<!-- ==================== PAGE 5: SUMMARY ==================== -->
+<div class="page">
+    <div class="page-header">
+        <h2>4. Summary & Decision Matrix</h2>
+        <span class="page-num">Page 5</span>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="value">Gemini</div>
+            <div class="label">Recommended Embedding Provider</div>
+        </div>
+        <div class="summary-card">
+            <div class="value">3.5 Flash</div>
+            <div class="label">Recommended LLM Model</div>
+        </div>
+        <div class="summary-card">
+            <div class="value" style="color: var(--green);">$16.65</div>
+            <div class="label">Est. Monthly Cost (100 req/day)</div>
+        </div>
+    </div>
+
+    <h3>Decision Matrix</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Criteria</th>
+                <th>Weight</th>
+                <th>Gemini (embed-001 + 3.5 Flash)</th>
+                <th>OpenAI (3-large + 4.1 Mini)</th>
+                <th>Mixed (Gemini embed + GPT-4.1 Mini)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Retrieval Quality</strong></td>
+                <td>25%</td>
+                <td><span class="stars">★★★★★</span> (task types)</td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+            </tr>
+            <tr>
+                <td><strong>Generation Quality</strong></td>
+                <td>25%</td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+            </tr>
+            <tr>
+                <td><strong>Cost Efficiency</strong></td>
+                <td>20%</td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+                <td><span class="stars">★★★★★</span></td>
+            </tr>
+            <tr>
+                <td><strong>Free Tier / Dev Cost</strong></td>
+                <td>10%</td>
+                <td><span class="stars">★★★★★</span> (both free)</td>
+                <td><span class="stars">★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+            </tr>
+            <tr>
+                <td><strong>Ecosystem Simplicity</strong></td>
+                <td>10%</td>
+                <td><span class="stars">★★★★★</span> (single provider)</td>
+                <td><span class="stars">★★★★★</span> (single provider)</td>
+                <td><span class="stars">★★★</span> (two providers)</td>
+            </tr>
+            <tr>
+                <td><strong>Future-proofing</strong></td>
+                <td>10%</td>
+                <td><span class="stars">★★★★★</span> (multimodal roadmap)</td>
+                <td><span class="stars">★★★★</span></td>
+                <td><span class="stars">★★★★</span></td>
+            </tr>
+            <tr style="background: #ecfdf5;">
+                <td><strong>Weighted Score</strong></td>
+                <td>100%</td>
+                <td style="font-weight: 700; font-size: 14px; color: var(--green);">4.7 / 5 🏆</td>
+                <td style="font-weight: 700;">4.2 / 5</td>
+                <td style="font-weight: 700;">4.3 / 5</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Proposed Architecture</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Technology</th>
+                <th>Rationale</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Embedding Model</strong></td>
+                <td>Gemini embedding-001</td>
+                <td>Free tier, task-type optimization, top-tier quality</td>
+            </tr>
+            <tr>
+                <td><strong>LLM (Generation)</strong></td>
+                <td>Gemini 3.5 Flash</td>
+                <td>Fast, high-quality, 1M context, same ecosystem</td>
+            </tr>
+            <tr>
+                <td><strong>Dimension Reduction</strong></td>
+                <td>3,072 → 1,536 (MRL)</td>
+                <td>50% storage savings, ~3% quality loss</td>
+            </tr>
+            <tr>
+                <td><strong>Search Strategy</strong></td>
+                <td>Hybrid (BM25 + Vector)</td>
+                <td>Handles technical terms (EMVCo, 3DS, ACS)</td>
+            </tr>
+            <tr>
+                <td><strong>Vector Database</strong></td>
+                <td>Pinecone / PGVector on AWS</td>
+                <td>Managed, scalable, hybrid search support</td>
+            </tr>
+            <tr>
+                <td><strong>Observability</strong></td>
+                <td>LangSmith</td>
+                <td>Tracing, evaluation, debugging</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note-box">
+        <strong>📌 Next Steps:</strong>
+        1. Set up Gemini API keys and configure embedding pipeline &nbsp;
+        2. Benchmark retrieval quality with Virtuebyte test queries &nbsp;
+        3. Implement hybrid search (BM25 + vector) &nbsp;
+        4. Deploy POC on AWS with monitoring
+    </div>
+
+    <div class="page-footer">
+        <span>Virtuebyte — AI Models Comparison Report</span>
+        <span>Confidential — July 2026</span>
+    </div>
+</div>
+
+</body>
+</html>

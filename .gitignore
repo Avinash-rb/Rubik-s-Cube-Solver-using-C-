@@ -1,0 +1,13 @@
+# Build artifacts
+*.exe
+*.o
+*.obj
+build/
+
+# Pattern Databases (These are generated at runtime and are too large for GitHub)
+*.pdb
+PatternDatabase/Database/
+
+# OS specific files
+.DS_Store
+Thumbs.db
